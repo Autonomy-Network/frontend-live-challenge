@@ -12,26 +12,23 @@ Here is our contract addresses that have already been deployed to the Ropsten Ne
 Registry Address:
 0x3C901dc595105934D61DB70C2170D3a6834Cb8B7
 
-If you need any further information or need some smart contracts done for your project please contact 
-@quantafire on the Autonomy discord.
+EthSender Address: 
+0xfa0a8b60b2af537dec9832f72fd233e93e4c8463
 
 If you have any other questions feel free to message us on our discord channel:
 
 https://discord.gg/XFEsHGhsxc
 
-Once you feel more familiar with what we are building at the Autonomy Network, you can start brainstorming ideas (eg. NFT automation, recurring subscription payments, limit orders on a DEX like Kyber or Bancor (not Uniswap since that example is below ;) ), etc). You can even bounce ideas off of us, again just reach us on our discord. (Clear communication is an asset 👀👀)
+It is very important to mention that we are not looking for a fully fledged projects, it dosen't have to look pretty or anything, it just has to work. We just want to know that you have the technical expertise and the ability to understand new web3 concepts quickly.
 
-After you come up with an idea, scope it out to your preference and current time commitments. Submit the scope or just let us know what is the timeline of your project. After that you can start coding.
-
-It is very important to mention that we are not looking for fully fledged projects, it can be a proof of concept or a mock project, we just want to know that you have the technical expertise and the autonomy to work with little to no supervision and make it look good at the same time. (If we like the idea and it works we will compensate you for your time, so make sure you scope it out properly).
+For this project, you will be building an Automated ETH Sender. You should be able to send an arbitrary amount of ETH from your wallet to any other wallet at an arbitrary time. For example, person A should be able to send 1 ETH in 20 minutes from now to person B, that is person A will be able to automate their transaction so that in 20 minutes it will be automatically sent to person B.
 
 The project must:
  - use Autonomy to automate some user action under some condition in the future
  - use MetaMask to interact with the user's account
- - have a nice looking UI
+ - let the user input a receiver address, amount of ETH (to send to the receiver address) and a time requirement (when to send the ETH).
 
-Finally, you can submit your project by sending us the code (git repo preferred, but you can send us files too) to @caraluno on Discord. Extra points for well documented code. You can deploy it or just give us instructions to look at the project in a dev environment, a small description of what you built would be amazing. Again you can reach us on discord or email for submissions.
-
+Finally, you can submit your project by sending us the code (git repo preferred, but you can send us files too) to @caraluna on Discord. Extra points for well documented code. You can deploy it or just give us instructions to look at the project in a dev environment. Again you can reach us on discord or email for submissions.
 
 Good luck, we are looking forward to your submission,
 
@@ -41,8 +38,7 @@ Autonomy Network Team
 The architecutre of Autonomy that you need to be aware of is that there's a Registry contract where users make a transaction to in order to register a new request. These requests have a condition built into the contracts they call which makes the transaction revert if the condition is false. The decentralised network of executor bots monitor all the requests in the Registry contract for when the requests can be executed without reverting.
 
 
-A simple example is if you wanted to create a dapp that sends eth to someone at a specific time in the future.
-In order to add a condition that reverts, you would need to create this simple contract:
+This is the contract required for the Automated ETH Sender (0xfa0a8b60b2af537dec9832f72fd233e93e4c8463):
 ```
 contract EthSender {
   function sendEthAtTime(uint time, address payable recipient) external payable {
@@ -112,11 +108,6 @@ The logic flow would be this:
 Send this transaction to the blockchain - this is the 1st and only transaction that the user sends
 In this case, `ethForCall` is the amount of ETH to send to `sendEthAtTime` and therefore is how much ETH we want to send to the recipient - so this is the amount inputted by the user in the UI.
 3. When the condition is met, a bot executes the request. The bot pays the gas fees with the ETH sent with the request in 2. and any excess ETH is returned to the user. The `recipient` receives the ETH in this transaction. This is the 2nd transaction sent to the blockchain, but is not sent by the user directly.
-
-
-A slightly more complicated example is, if Uniswap wanted to add limit orders to their DEX, they could create a wrapper contract that adds the condition 'if price is below x, revert'. The user would just click a limit order button, and the frontend would make a transaction to the Registry, calling `newReq`.
-An example of this can be seen in https://github.com/Autonomy-Network/AutoSwap-Diff/pull/1
-It is live here: https://autoswap-mock-deployment.vercel.app/#/swap
 
 Generally to keep things as simple as possible, the parameters would be:
  - `target` would be equal to the Uniswap wrapper contract
