@@ -109,12 +109,3 @@ Send this transaction to the blockchain - this is the 1st and only transaction t
 In this case, `ethForCall` is the amount of ETH to send to `sendEthAtTime` and therefore is how much ETH we want to send to the recipient - so this is the amount inputted by the user in the UI.
 3. When the condition is met, a bot executes the request. The bot pays the gas fees with the ETH sent with the request in 2. and any excess ETH is returned to the user. The `recipient` receives the ETH in this transaction. This is the 2nd transaction sent to the blockchain, but is not sent by the user directly.
 
-Generally to keep things as simple as possible, the parameters would be:
- - `target` would be equal to the Uniswap wrapper contract
- - `referer` can just be set to `0x00..00`
- - `callData` would be the calldata that would need to be sent to the wrapper contract. This can be seen with https://github.com/Autonomy-Network/AutoSwap-Diff/blob/923fc0feb300f429b93221c9fcbae97ef889beae/src/hooks/useSwapCallback.ts#L237
- - `ethForCall` would be 0 if no eth is being sent. If the user wanted to trade eth > token, then `ethForCall` should be the amount of eth they want to trade, in wei
- - `verifyUser` would be `true` since you want the wrapper contract to know who the user is
- - `insertFeeAmount` would be `false` in the simple case of pre-paying for the execution
- - `payWithAUTO` would be `false`
-The 'value' sent with the function call would have to be equal to `ethForCall` to call the target function, and also have enough eth to pay the executor bot for the eth they spent executing the request in the future, plus a small fee (30% of the total gas cost that the executor paid). So regardless of whether `ethForCall` is 0, 'value' = `ethForCall` + 0.01 ETH (depends on gas prices, but for Ropsten, 0.01 ETH is enough to cover this. Any excess ETH that is not used in the execution is returned to the user after execution has finished)
